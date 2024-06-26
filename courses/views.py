@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.contrib.auth import login
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
-
+from knox import views as knox_views
 
 from . import models
 from . import serializers
@@ -39,3 +39,17 @@ class RegistrationView(APIView):
             user = serializer.save()
             return Response(serializers.UserSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class EmailPasswordLogin(knox_views.LoginView):
+    """View used to login using email and password."""
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.EmailPasswordLoginSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            login(request, user)
+            return Response(super().post(request, format=None).data, status=status.HTTP_200_OK)
+        else:
+            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
