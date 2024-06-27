@@ -17,9 +17,11 @@ class JoinCourse(APIView):
             return Response({"errors": ["course_id not set in request."]}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            course_join_code = models.CourseJoinCode.get(
+            print(kwargs)
+            course_join_code = models.CourseJoinCode.objects.get(
                 code=kwargs['course_id'])
-        except:
+        except Exception as e:
+            print(e)
             return Response({"errors": [f"course join code {str(kwargs['course_id'])} doesn't exist"]}, status=status.HTTP_404_NOT_FOUND)
 
         try:
