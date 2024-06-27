@@ -137,6 +137,6 @@ REST_FRAMEWORK = {
 }
 
 REST_KNOX = {
-    'USER_SERIALIZER': 'v1.serializers.PrivateUserSerializer',
+    'USER_SERIALIZER': 'courses.serializers.UserSerializer',
     'TOKEN_TTL': timedelta(hours=48),
 }

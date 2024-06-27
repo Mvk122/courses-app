@@ -33,6 +33,9 @@ class JoinCourse(APIView):
 
 
 class RegistrationView(APIView):
+
+    permission_classes = (AllowAny,)
+
     def post(self, request):
         serializer = serializers.RegisterationSerializer(data=request.data)
         if serializer.is_valid():
